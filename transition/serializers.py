@@ -1,15 +1,29 @@
 from rest_framework import serializers
 from .models import State, Organization
 
-#STATE SERIALIZER
-class StatesSerializer(serializers.ModelSerializer):
+# STATE SERIALIZER
+
+
+class StatesSerializer(serializers.HyperlinkedModelSerializer):
+    organizations = serializers.HyperlinkedRelatedField(
+        view_name='organization_detail',
+        many=True,
+        read_only=True
+    )
+
     class Meta:
         model = State
-        fields = '__all__'
+        fields = ('id', 'name', 'state_flag', 'organizations')
 
 
 # ORAGANIZATIONS SERIALIZER
-class OrganizationsSerializer(serializers.ModelSerializer):
+class OrganizationsSerializer(serializers.HyperlinkedModelSerializer):
+    state_id = serializers.HyperlinkedRelatedField(
+        view_name='state_detail',
+        read_only=True
+    )
+
     class Meta:
         model = Organization
-        fields = '__all__'
+        fields = ('state_id', 'name', 'industry', 'image',
+                  'description', 'external_link')
